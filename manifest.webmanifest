@@ -1,0 +1,14 @@
+{
+  "name": "Flashover",
+  "short_name": "Flashover",
+  "description": "Plateforme de révision des futurs chefs d'équipe sapeurs-pompiers.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#16181D",
+  "theme_color": "#16181D",
+  "lang": "fr",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

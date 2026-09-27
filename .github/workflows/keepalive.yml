@@ -1,0 +1,24 @@
+# Les projets Supabase gratuits se mettent en pause après 7 jours sans activité.
+# Cette tâche contacte la base tous les 3 jours pour la garder éveillée.
+name: Garder Supabase actif
+
+on:
+  schedule:
+    - cron: "17 6 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Contacter la base
+        run: |
+          URL=$(grep -oP 'SUPABASE_URL = "\K[^"]+' js/config.js || true)
+          KEY=$(grep -oP 'SUPABASE_ANON_KEY = "\K[^"]+' js/config.js || true)
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then echo "Supabase pas encore configuré"; exit 0; fi
+          AUTH=""
+          case "$KEY" in sb_*) ;; *) AUTH="Authorization: Bearer $KEY" ;; esac
+          curl -sS -X POST "$URL/rest/v1/rpc/flashover_login" \
+            -H "apikey: $KEY" ${AUTH:+-H "$AUTH"} -H "Content-Type: application/json" \
+            -d '{"p_code":"ping"}'
