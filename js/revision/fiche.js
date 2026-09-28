@@ -106,6 +106,10 @@ export function renderFiche(app, mod, fiche, nav) {
       (nav.next ? '<a class="btn" href="' + nav.next.href + '">' + esc(nav.next.title) + ic("next") + "</a>" : "") + "</div>";
   app.querySelectorAll("[data-steps]").forEach((el) => mountStepper(el.querySelector(".stepper"), blocks[+el.dataset.steps]));
   app.querySelectorAll("[data-zoom]").forEach((b) => { b.onclick = () => lightbox(blocks[+b.dataset.zoom].svg || ""); });
+  // Vidéos externes : toujours dans un nouvel onglet, même quand le site est installé comme application
+  app.querySelectorAll(".vlink").forEach((a) => {
+    a.onclick = (e) => { e.preventDefault(); window.open(a.href, "_blank", "noopener"); };
+  });
   const mr = app.querySelector("#markRead");
   mr.onclick = () => { progress.markRead(mod.id, fiche.id); mr.innerHTML = ic("check") + "Déjà lue"; };
 }
