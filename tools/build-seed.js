@@ -38,13 +38,13 @@ function tenueSchema(fig) {
     ["g", 142, 128, 110, "Cagoule", "rentrée dans la veste"],
     ["g", 165, 160, 196, "Jugulaire", "attachée"],
     ["g", 97, 392, 392, "Gants de feu", "par-dessus les manches"],
-    ["g", 150, 470, 492, "Pantalon de feu", "ajusté à la taille"],
+    ["g", 150, 470, 492, "Surpantalon de feu", "par-dessus le pantalon TSI"],
     ["g", 150, 628, 640, "Bottes coquées", ""],
     ["d", 200, 60, 62, "Casque F1", "chaleur, chutes d'objets"],
-    ["d", 252, 170, 164, "Bavolet", "par-dessus la veste"],
+    ["d", 224, 166, 164, "Col montant", "relevé et fermé : protège la nuque"],
     ["d", 214, 300, 296, "Veste de feu", "fermée : zip puis velcro"],
     ["d", 200, 394, 404, "Jusqu'à mi-cuisse", "bras couverts jusqu'aux poignets"],
-    ["d", 205, 596, 588, "Bas du pantalon", "sur la botte, jusqu'au talon"]
+    ["d", 205, 596, 588, "Bas du surpantalon", "sur la botte, jusqu'au talon"]
   ];
   let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" font-family="Segoe UI, Roboto, Arial, sans-serif" role="img" aria-label="La tenue de feu bien portée">' + inner;
   L.forEach(([side, fx, fy, ly, title, sub]) => {

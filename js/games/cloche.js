@@ -5,13 +5,12 @@ import { SND } from "./engine.js";
 import { gameBar, bindBar } from "./common.js";
 
 const COLOR = "#7A3FB8";
-export const CLOCHE_ZONES = ["jugulaire", "bavolet", "col", "veste", "gants", "bas"];
+export const CLOCHE_ZONES = ["jugulaire", "col", "veste", "gants", "bas"];
 
 /* Zones cliquables (x, y, largeur, hauteur) dans le repère 0 0 360 660 */
 const HIT = {
   jugulaire: [[122, 88, 116, 72]],
   col: [[128, 160, 104, 52]],
-  bavolet: [[86, 150, 42, 62], [232, 150, 42, 62]],
   veste: [[146, 214, 68, 190]],
   gants: [[62, 352, 60, 104], [238, 352, 60, 104]],
   bas: [[118, 506, 124, 146]]
@@ -25,12 +24,12 @@ export function figureSVG(err, opts) {
   const navy = "#1E2A3A", navy2 = "#2A3A50", red = "#C1121F", skin = "#E9B996", glove = "#3A3F46", boot = "#111418";
   const band = (x, y, w) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="5" fill="#D9E021"/><rect x="' + x + '" y="' + (y + 5) + '" width="' + w + '" height="5" fill="#C9CED6"/><rect x="' + x + '" y="' + (y + 10) + '" width="' + w + '" height="5" fill="#D9E021"/>';
   let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 660" class="figure" role="img" aria-label="Sapeur-pompier en tenue de feu">';
-  // Bottes (dessinées avant le pantalon quand il est bien porté par-dessus)
+  // Bottes (dessinées avant le surpantalon quand il est bien porté par-dessus)
   const boots = '<path d="M128 588h48v42h8v18h-62v-18h6z" fill="' + boot + '"/><path d="M184 588h48v42h6v18h-62v-18h8z" fill="' + boot + '"/>';
   const bootsHigh = '<path d="M126 520h52v110h8v18h-66v-18h6z" fill="' + boot + '"/><path d="M182 520h52v110h6v18h-66v-18h8z" fill="' + boot + '"/>' +
     '<path d="M126 520h52v10h-52zM182 520h52v10h-52z" fill="#2b2f36"/>';
   if (!E("bas")) s += boots;
-  // Jambes du pantalon
+  // Jambes du surpantalon
   const legBottom = E("bas") ? 530 : 606;
   s += '<path d="M132 396h46l2 ' + (legBottom - 396) + 'h-50z" fill="' + navy + '"/><path d="M182 396h46l2 ' + (legBottom - 396) + 'h-50z" fill="' + navy + '"/>';
   s += band(131, 462, 48) + band(181, 462, 48);
@@ -64,9 +63,6 @@ export function figureSVG(err, opts) {
   } else {
     s += '<rect x="175" y="188" width="10" height="214" fill="' + navy2 + '"/><line x1="180" y1="188" x2="180" y2="402" stroke="#0f1620" stroke-width="2"/>';
   }
-  // Bavolet sous le col (erreur) : dessiné avant le col, presque caché
-  const bavolet = '<path d="M136 118l-38 70 34 8 14 -46z" fill="#C9CED6" stroke="#8f959d" stroke-width="2"/><path d="M224 118l38 70 -34 8 -14 -46z" fill="#C9CED6" stroke="#8f959d" stroke-width="2"/>';
-  if (E("bavolet")) s += '<path d="M138 120l-12 50 18 0 8 -40z" fill="#C9CED6"/><path d="M222 120l12 50 -18 0 -8 -40z" fill="#C9CED6"/>';
   // Cagoule autour du visage
   s += '<ellipse cx="180" cy="126" rx="42" ry="50" fill="' + red + '"/>';
   if (E("col")) s += '<path d="M132 150q48 30 96 0l14 42q-62 24 -124 0z" fill="' + red + '"/>';
@@ -74,9 +70,8 @@ export function figureSVG(err, opts) {
   if (E("col")) {
     s += '<path d="M146 168l-24 28 30 4 18 -24z" fill="' + navy2 + '"/><path d="M214 168l24 28 -30 4 -18 -24z" fill="' + navy2 + '"/>';
   } else {
-    s += '<path d="M140 156q40 14 80 0l6 38q-46 12 -92 0z" fill="' + navy2 + '"/><rect x="175" y="160" width="10" height="34" fill="#0f1620"/>';
+    s += '<path d="M136 142q44 18 88 0l8 52q-52 12 -104 0z" fill="' + navy2 + '"/><rect x="175" y="150" width="10" height="44" fill="#0f1620"/>';
   }
-  if (!E("bavolet")) s += bavolet;
   // Visage
   s += '<ellipse cx="180" cy="126" rx="25" ry="31" fill="' + skin + '"/>';
   s += '<circle cx="171" cy="120" r="2.6" fill="#2b2f36"/><circle cx="189" cy="120" r="2.6" fill="#2b2f36"/><path d="M172 142q8 5 16 0" stroke="#8a5a44" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
