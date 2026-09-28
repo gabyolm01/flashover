@@ -28,18 +28,18 @@ function blockHTML(b, i) {
           '<video controls preload="metadata" playsinline src="' + esc(b.url) + '"' + (b.poster ? ' poster="' + esc(b.poster) + '"' : "") + "></video>" +
           (b.caption || b.credit ? '<div class="caption">' + fmt(b.caption || "") + (b.credit ? " <i>(" + esc(b.credit) + ")</i>" : "") + "</div>" : "") + "</div>";
       }
+      // YouTube / Dailymotion : les lecteurs intégrés ne fonctionnent pas sur le site en ligne,
+      // on affiche la miniature et un bouton qui ouvre la vidéo sur la plateforme (ou son application)
       const dm = String(b.url || "").match(/(?:dailymotion\.com\/(?:embed\/)?video\/|dai\.ly\/)([a-zA-Z0-9]+)/);
-      if (dm) {
-        return '<div class="blk blk-media">' + (b.title ? "<h3>" + ic("video") + esc(b.title) + "</h3>" : "") +
-          '<div class="video"><iframe src="https://geo.dailymotion.com/player.html?video=' + dm[1] + '" title="' + esc(b.title || "Vidéo") + '" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; web-share" allowfullscreen></iframe></div>' +
-          '<div class="caption">' + (b.caption ? fmt(b.caption) + " · " : "") + (b.credit ? "<i>(" + esc(b.credit) + ")</i> · " : "") +
-          '<a href="https://www.dailymotion.com/video/' + dm[1] + '" target="_blank" rel="noopener">Ouvrir sur Dailymotion</a></div></div>';
-      }
-      const id = youtubeId(b.url);
-      if (!id) return '<div class="blk empty">' + ic("video") + " Vidéo à ajouter" + (b.title ? " : " + esc(b.title) : "") + "</div>";
+      const id = dm ? null : youtubeId(b.url);
+      if (!dm && !id) return '<div class="blk empty">' + ic("video") + " Vidéo à ajouter" + (b.title ? " : " + esc(b.title) : "") + "</div>";
+      const site = dm ? "Dailymotion" : "YouTube";
+      const href = dm ? "https://www.dailymotion.com/video/" + dm[1] : "https://www.youtube.com/watch?v=" + id;
+      const thumb = dm ? "https://www.dailymotion.com/thumbnail/video/" + dm[1] : "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
       return '<div class="blk blk-media">' + (b.title ? "<h3>" + ic("video") + esc(b.title) + "</h3>" : "") +
-        '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?rel=0" title="' + esc(b.title || "Vidéo") + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>' +
-        '<div class="caption">' + (b.caption ? fmt(b.caption) + " · " : "") + '<a href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener">Ouvrir sur YouTube</a></div></div>';
+        '<a class="vlink" href="' + href + '" target="_blank" rel="noopener"><img src="' + thumb + '" alt="" loading="lazy">' +
+        '<span class="vplay">' + ic("play") + "</span><span class=\"vbtn\">Voir la vidéo sur " + site + "</span></a>" +
+        (b.caption || b.credit ? '<div class="caption">' + fmt(b.caption || "") + (b.credit ? " <i>(" + esc(b.credit) + ")</i>" : "") + "</div>" : "") + "</div>";
     }
     case "table": return '<div class="blk blk-table">' + (b.title ? "<h3>" + esc(b.title) + "</h3>" : "") + '<div class="tablewrap"><table>' +
       (b.head && b.head.length ? "<tr>" + b.head.map((h) => "<th>" + fmt(h) + "</th>").join("") + "</tr>" : "") +
