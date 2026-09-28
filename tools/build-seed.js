@@ -41,7 +41,7 @@ function tenueSchema(fig) {
     ["g", 150, 470, 492, "Surpantalon de feu", "par-dessus le pantalon TSI"],
     ["g", 150, 628, 640, "Bottes coquées", ""],
     ["d", 200, 60, 62, "Casque F1", "chaleur, chutes d'objets"],
-    ["d", 224, 166, 164, "Col montant", "relevé et fermé : protège la nuque"],
+    ["d", 224, 166, 164, "Col montant", "relevé, protège-cou rabattu"],
     ["d", 214, 300, 296, "Veste de feu", "fermée : zip puis velcro"],
     ["d", 200, 394, 404, "Jusqu'à mi-cuisse", "bras couverts jusqu'aux poignets"],
     ["d", 205, 596, 588, "Bas du surpantalon", "sur la botte, jusqu'au talon"]
