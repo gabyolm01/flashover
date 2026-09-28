@@ -5,7 +5,7 @@ import { activeQuestions, pickQuestions, prepare, mountQuestion, SND } from "../
 
 export const BLOCK_TYPES = {
   intro: "Introduction", text: "Texte", key: "Points clés", warn: "Attention / sécurité", steps: "Étapes (pas à pas)",
-  schema: "Schéma", image: "Image", video: "Vidéo YouTube", table: "Tableau"
+  schema: "Schéma", image: "Image", video: "Vidéo", table: "Tableau"
 };
 
 function blockHTML(b, i) {
@@ -23,6 +23,11 @@ function blockHTML(b, i) {
       '<div class="imgwrap"><img src="' + esc(b.src) + '" alt="' + esc(b.caption || b.title || "") + '" loading="lazy"></div>' +
       (b.caption || b.credit ? '<div class="caption">' + fmt(b.caption || "") + (b.credit ? " <i>(" + esc(b.credit) + ")</i>" : "") + "</div>" : "") + "</div>";
     case "video": {
+      if (/\.(mp4|webm)(\?|$)/i.test(b.url || "")) {
+        return '<div class="blk blk-media">' + (b.title ? "<h3>" + ic("video") + esc(b.title) + "</h3>" : "") +
+          '<video controls preload="metadata" playsinline src="' + esc(b.url) + '"' + (b.poster ? ' poster="' + esc(b.poster) + '"' : "") + "></video>" +
+          (b.caption || b.credit ? '<div class="caption">' + fmt(b.caption || "") + (b.credit ? " <i>(" + esc(b.credit) + ")</i>" : "") + "</div>" : "") + "</div>";
+      }
       const id = youtubeId(b.url);
       if (!id) return '<div class="blk empty">' + ic("video") + " Vidéo à ajouter" + (b.title ? " : " + esc(b.title) : "") + "</div>";
       return '<div class="blk blk-media">' + (b.title ? "<h3>" + ic("video") + esc(b.title) + "</h3>" : "") +

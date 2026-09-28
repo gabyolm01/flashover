@@ -8,6 +8,7 @@ import { startDuelGame } from "./games/duel.js";
 import { startTableGame } from "./games/tableau.js";
 import { startDefiGame } from "./games/defi.js";
 import { startClocheGame } from "./games/cloche.js";
+import { startSituationGame } from "./games/situation.js";
 import { poolSize } from "./games/engine.js";
 
 const app = document.getElementById("app");
@@ -28,7 +29,10 @@ export const GAMES = {
     start: startDefiGame, ok: (m) => (m.defis || []).length > 0 },
   cloche: { name: "Qu'est-ce qui cloche ?", icon: "zoom", color: "#7A3FB8", tags: ["Individuel", "En groupe"],
     desc: "Repérez les erreurs de port de la tenue de feu sur le personnage. De nouvelles erreurs à chaque manche.",
-    start: startClocheGame, ok: (m) => !!m.cloche }
+    start: startClocheGame, ok: (m) => !!m.cloche },
+  situation: { name: "Mises en situation", icon: "flame", color: "#B5179E", tags: ["Individuel", "En groupe", "Calculs"],
+    desc: "Des scénarios illustrés et réalistes, étape par étape : décisions à prendre, calculs d'autonomie, manomètre sous les yeux.",
+    start: startSituationGame, ok: (m) => (m.situations || []).length > 0 }
 };
 
 /* ---- Données ---- */

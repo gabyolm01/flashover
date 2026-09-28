@@ -1,10 +1,10 @@
 /* Service worker : garde l'application disponible hors connexion.
    Le contenu (fiches, questions) est gardé à part par l'application, après saisie du code. */
-const VERSION = "flashover-v4";
+const VERSION = "flashover-v5";
 const SHELL = [
   "./", "index.html", "css/app.css", "manifest.webmanifest", "icons/favicon.png", "icons/logo-h.webp", "icons/logo-icon.webp",
   "js/app.js", "js/config.js", "js/ui.js", "js/store.js", "js/progress.js",
-  "js/games/engine.js", "js/games/common.js", "js/games/quiz.js", "js/games/duel.js", "js/games/tableau.js", "js/games/defi.js", "js/games/cloche.js",
+  "js/games/engine.js", "js/games/common.js", "js/games/quiz.js", "js/games/duel.js", "js/games/tableau.js", "js/games/defi.js", "js/games/cloche.js", "js/games/situation.js",
   "js/revision/fiche.js", "js/formateur/formateur.js"
 ];
 
@@ -19,6 +19,8 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== location.origin) return;
+  // Vidéos : lues directement par le navigateur (lecture par morceaux), jamais gardées en cache
+  if (e.request.headers.has("range") || /\.(mp4|webm)$/i.test(url.pathname)) return;
   e.respondWith(
     fetch(new Request(e.request, { cache: "no-cache" })).then((r) => {
       const copy = r.clone();
