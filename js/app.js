@@ -6,6 +6,8 @@ import { renderFiche, renderTest, testPool } from "./revision/fiche.js";
 import { startQuizGame } from "./games/quiz.js";
 import { startDuelGame } from "./games/duel.js";
 import { startTableGame } from "./games/tableau.js";
+import { startDefiGame } from "./games/defi.js";
+import { startClocheGame } from "./games/cloche.js";
 import { poolSize } from "./games/engine.js";
 
 const app = document.getElementById("app");
@@ -20,7 +22,13 @@ export const GAMES = {
     start: startDuelGame, ok: (m) => poolSize(m) >= 6 },
   tableau: { name: "Tableau à étiquettes", icon: "table", color: "#C1121F", tags: ["Individuel", "En groupe"],
     desc: "Replacez chaque étiquette dans la bonne case du tableau récapitulatif. Trois niveaux de difficulté.",
-    start: startTableGame, ok: (m) => !!m.table }
+    start: startTableGame, ok: (m) => !!m.table },
+  defi: { name: "Mission terrain", icon: "target", color: "#23964A", tags: ["Réel + virtuel", "En binôme", "Manœuvre"],
+    desc: "Le jeu lance une mission : réalisez-la pour de vrai, chrono en main, puis vérifiez point par point avec la correction illustrée.",
+    start: startDefiGame, ok: (m) => (m.defis || []).length > 0 },
+  cloche: { name: "Qu'est-ce qui cloche ?", icon: "zoom", color: "#7A3FB8", tags: ["Individuel", "En groupe"],
+    desc: "Repérez les erreurs de port de la tenue de feu sur le personnage. De nouvelles erreurs à chaque manche.",
+    start: startClocheGame, ok: (m) => !!m.cloche }
 };
 
 /* ---- Données ---- */

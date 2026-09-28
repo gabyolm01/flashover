@@ -35,6 +35,16 @@ export const progress = {
     save(p);
   },
 
+  /* Meilleur temps (missions chronométrées réussies) ; renvoie true si c'est un record */
+  saveBestTime(mod, gid, ms) {
+    const p = load(), k = mod + "/" + gid, g = p.games[k] || { plays: 0 };
+    const record = !g.bestTime || ms < g.bestTime;
+    if (record) g.bestTime = ms;
+    p.games[k] = g;
+    save(p);
+    return record;
+  },
+
   /* Questions déjà posées (pour proposer d'abord les nouvelles) */
   seenMap(mod) { return load().seen[mod] || {}; },
   markSeen(mod, id) {

@@ -374,6 +374,43 @@ h3.sub{margin:0 0 12px;font-size:14px;text-transform:uppercase;letter-spacing:.0
 .level .go{margin-top:auto;align-self:flex-start;background:var(--lc);color:#fff;border-radius:8px;padding:10px 18px;font-weight:800;display:inline-flex;gap:8px;align-items:center}
 .level .go svg{width:16px;height:16px}
 
+/* « Qu'est-ce qui cloche ? » */
+.cloche{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:24px;align-items:start}
+.figwrap{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:10px;position:sticky;top:80px}
+.figwrap svg{display:block;width:100%;height:auto;max-height:78vh}
+.hit{fill:transparent;stroke:transparent;stroke-width:4;cursor:pointer;transition:fill .15s}
+.hit:hover{fill:rgba(255,196,0,.18)}
+.hit.on{fill:rgba(255,196,0,.28);stroke:var(--yellow);stroke-dasharray:8 6}
+.hit.bad{stroke:var(--red);stroke-dasharray:none;fill:rgba(193,18,31,.12)}
+.hit.bad.on{stroke:var(--ok);fill:rgba(35,150,74,.18)}
+.hit.fp{stroke:#8a8f97;stroke-dasharray:4 4;fill:rgba(0,0,0,.08)}
+.clochepanel{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:20px 22px;border-top:8px solid #7A3FB8}
+.clochepanel h2{margin:0 0 6px}
+.sellist{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 16px;min-height:26px}
+.clocheres{display:grid;gap:10px;margin:16px 0 12px}
+
+/* Mission terrain */
+.mission{max-width:760px;margin:10px auto;text-align:center;background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:28px 24px;border-top:10px solid #23964A}
+.mission .kicker{color:#23964A;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.mission h1{font-size:clamp(28px,2.4vw + 14px,44px);margin:6px 0 12px}
+.consigne{font-size:clamp(18px,1vw + 12px,24px);line-height:1.45;margin:0 0 14px}
+.chrono{font-size:clamp(64px,8vw + 20px,120px);font-weight:900;font-variant-numeric:tabular-nums;line-height:1;margin:18px 0 22px;color:var(--char)}
+.chrono small{font-size:.45em;color:var(--muted)}
+.checklist{display:grid;gap:8px}
+.chk{display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--soft);border-radius:12px;padding:10px 12px;border-left:6px solid #d4d0c8;flex-wrap:wrap}
+.chk-t{font-size:17px;font-weight:600;flex:1;min-width:200px}
+.chk-b{display:flex;gap:6px}
+.chk.yes{border-left-color:var(--ok);background:var(--ok-bg)}
+.chk.no{border-left-color:var(--red);background:var(--ko-bg)}
+.chk.yes [data-v="1"]{background:var(--ok);color:#fff}
+.chk.no [data-v="0"]{background:var(--red);color:#fff}
+.corr{display:grid;gap:12px}
+.corr-item{display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:14px;border-left:6px solid var(--ok)}
+.corr-item.ko{border-left-color:var(--red)}
+.corr-item img{width:180px;max-width:38%;border-radius:10px;flex:none}
+.corr-item b{font-size:17px}
+.corr-item p{margin:6px 0 0;line-height:1.45}
+
 /* ---- Progression ---- */
 .pmod{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border-left:7px solid var(--mc);margin-bottom:12px}
 .pmod h3{margin:0 0 10px;display:flex;justify-content:space-between;gap:10px;align-items:center}
@@ -437,7 +474,11 @@ body:has(.screen.tableplay) .toast{top:84px;bottom:auto}
   .lightbox{place-items:start;padding:56px 0 0}
   .lightbox .inner{border-radius:0;max-height:calc(100vh - 56px)}
   .lightbox .inner svg{min-width:960px}
-  .choices,.rgrid,.frow,.teamsetup,.bets,.finals,.levels{grid-template-columns:1fr}
+  .choices,.rgrid,.frow,.teamsetup,.bets,.finals,.levels,.cloche{grid-template-columns:1fr}
+  .figwrap{position:static}
+  .figwrap svg{max-height:60vh;margin:0 auto}
+  .corr-item{flex-direction:column}
+  .corr-item img{width:100%;max-width:none}
   .qrow{grid-template-columns:auto 1fr auto}
   .qrow .qf,.qrow .qtype{display:none}
   .score-board{grid-template-columns:1fr 1fr}

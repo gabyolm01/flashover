@@ -2,7 +2,7 @@
 # il est stocké dans Supabase et protégé par le code d'accès.
 # Le dossier seed/ (sources du contenu) reste uniquement sur l'ordinateur.
 seed/
-supabase/seed.sql
+supabase/seed*.sql
 node_modules/
 .DS_Store
 Thumbs.db
