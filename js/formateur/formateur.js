@@ -1,5 +1,5 @@
 /* Mode formateur : modification du contenu, protégé par le code formateur */
-import { ic, esc, fmt, clone, toast, logoHTML, norm, youtubeId } from "../ui.js";
+import { ic, esc, fmt, clone, toast, logoHTML, norm, youtubeId, plural } from "../ui.js";
 import { store } from "../store.js";
 import { QTYPES } from "../games/engine.js";
 import { BLOCK_TYPES } from "../revision/fiche.js";
@@ -100,7 +100,7 @@ function dashboard(app, api) {
     '<h1 class="title">Mode formateur</h1><p class="lead">Choisissez un module à modifier. Chaque enregistrement est aussitôt visible par tous.</p>' +
     '<div class="section-title">Modules</div><div class="fiches">' + api.modules().map((m) =>
       '<a class="fitem" href="#/formateur/m/' + m.id + '" style="--mc:' + m.color + '"><span class="st" style="background:' + m.color + ';color:#fff">' + ic(m.icon) + "</span>" +
-      '<span><div class="ft">' + esc(m.title) + '</div><div class="fm">' + (m.fiches || []).length + " fiches · " + (m.questions || []).length + " questions · " +
+      '<span><div class="ft">' + esc(m.title) + '</div><div class="fm">' + plural((m.fiches || []).length, "fiche") + " · " + plural((m.questions || []).length, "question") + " · " +
       (m.status === "ready" ? "publié" : "« bientôt »") + '</div></span><span class="go">' + ic("edit") + "</span></a>").join("") + "</div>" +
     '<div class="row" style="margin-top:12px"><button class="btn" id="addMod">' + ic("plus") + "Ajouter un module</button></div>" +
     '<div class="section-title">Plateforme</div>' +

@@ -49,7 +49,7 @@ export function ic(n) {
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || ICONS.help) + "</svg>";
 }
 export function logoHTML() {
-  return '<span class="logo-mark">' + ic("flame") + '</span><span class="logo-word">Flash<b>over</b></span>';
+  return '<img class="logo-full" src="icons/logo-h.webp" alt="Flashover"><img class="logo-mini" src="icons/logo-icon.webp" alt="Flashover">';
 }
 
 export function esc(s) {

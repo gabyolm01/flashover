@@ -1,5 +1,5 @@
 /* Flashover : application principale (navigation et pages) */
-import { ic, esc, fmt, logoHTML, toast } from "./ui.js";
+import { ic, esc, fmt, logoHTML, toast, plural } from "./ui.js";
 import { store } from "./store.js";
 import { progress } from "./progress.js";
 import { renderFiche, renderTest, testPool } from "./revision/fiche.js";
@@ -36,6 +36,7 @@ export function modules() {
   });
 }
 export function moduleById(id) { return ((store.content && store.content.modules) || {})[id]; }
+const luesWord = (n) => (n > 1 ? "fiches lues" : "fiche lue");
 const visibleFiches = (m) => (m.fiches || []).filter((f) => !f.hidden);
 
 /* ---- Cadre des pages ---- */
@@ -79,15 +80,15 @@ function home() {
   let read = 0, total = 0;
   mods.forEach((m) => { const s = progress.stats(m); read += s.read; total += s.total; });
   page.innerHTML =
-    '<section class="hero"><h1>' + esc(P.name || "Flashover") + "</h1><p>" + fmt(P.tagline || "Révisez tous les modules de chef d'équipe, seul ou en équipe, et passez au niveau supérieur.") + "</p>" +
-      '<div class="stats"><span class="pill"><b>' + mods.length + "</b> modules</span><span class=\"pill\"><b>" + read + "/" + total + '</b> fiches lues</span></div></section>' +
+    '<section class="hero"><img class="hero-icon" src="icons/logo-icon.webp" alt=""><h1>' + esc(P.name || "Flashover") + "</h1><p>" + fmt(P.tagline || "Révisez tous les modules de chef d'équipe, seul ou en équipe, et passez au niveau supérieur.") + "</p>" +
+      '<div class="stats"><span class="pill"><b>' + mods.length + "</b> modules</span><span class=\"pill\"><b>" + read + "/" + total + '</b> ' + luesWord(total) + '</span></div></section>' +
     '<div class="section-title">Modules</div><div class="modules">' + mods.map((m) => {
       const s = progress.stats(m), soon = m.status !== "ready";
       return '<a class="mod' + (soon ? " soon" : "") + '" href="#/m/' + m.id + '" style="--mc:' + m.color + '">' +
         (soon ? '<span class="badge soon">Bientôt</span>' : "") +
         '<span class="micon">' + ic(m.icon) + "</span><h2>" + esc(m.title) + "</h2><p>" + esc(m.short || "") + "</p>" +
-        (s.total ? '<span class="proglabel">' + s.read + "/" + s.total + ' fiches lues</span><span class="prog"><i style="width:' + s.pct + '%"></i></span>'
-          : '<span class="proglabel">' + (m.competences || []).length + " compétences</span>") + "</a>";
+        (s.total ? '<span class="proglabel">' + s.read + "/" + s.total + ' ' + luesWord(s.total) + '</span><span class="prog"><i style="width:' + s.pct + '%"></i></span>'
+          : '<span class="proglabel">' + plural((m.competences || []).length, "compétence") + "</span>") + "</a>";
     }).join("") + "</div>" +
     '<div class="links"><a class="btn" href="#/progression">' + ic("chart") + 'Ma progression</a><button class="btn" id="logout">' + ic("logout") + "Changer de code</button></div>";
   page.querySelector("#logout").onclick = () => { if (confirm("Se déconnecter ? Il faudra retaper le code d'accès.")) { store.logout(); gate(); } };
@@ -123,7 +124,7 @@ function modulePage(m, tab) {
   }
   page.innerHTML =
     '<div class="modhead"><span class="micon">' + ic(m.icon) + "</span><div><h1>" + esc(m.title) + "</h1><p>" +
-      (s.total ? s.read + "/" + s.total + " fiches lues" + (s.avg != null ? " · tests : " + s.avg + " % en moyenne" : "") : esc(m.short || "")) + "</p></div></div>" +
+      (s.total ? s.read + "/" + s.total + " " + luesWord(s.total) + (s.avg != null ? " · tests : " + s.avg + " % en moyenne" : "") : esc(m.short || "")) + "</p></div></div>" +
     '<nav class="tabs"><a class="tab' + (tab !== "jeux" ? " on" : "") + '" href="#/m/' + m.id + '">' + ic("book") + "Révisions</a>" +
       '<a class="tab' + (tab === "jeux" ? " on" : "") + '" href="#/m/' + m.id + '/jeux">' + ic("gamepad") + "Jeux (" + games.length + ")</a></nav>" + body;
 }

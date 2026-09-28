@@ -7,6 +7,11 @@ http.createServer((req, res) => {
   if (p.endsWith("/")) p += "index.html";
   const file = path.join(root, p);
   if (!file.startsWith(root)) { res.writeHead(403); return res.end(); }
+  // LOCAL=1 : ignore la base en ligne et utilise seed/content.json (codes « stagiaire » / « formateur »)
+  if (process.env.LOCAL && p === "/js/config.js") {
+    res.writeHead(200, { "Content-Type": "text/javascript; charset=utf-8", "Cache-Control": "no-store" });
+    return res.end('export const SUPABASE_URL = "";\nexport const SUPABASE_ANON_KEY = "";\n');
+  }
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404); return res.end("404"); }
     res.writeHead(200, { "Content-Type": (types[path.extname(file)] || "application/octet-stream") + "; charset=utf-8", "Cache-Control": "no-store" });

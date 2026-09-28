@@ -1,8 +1,8 @@
 /* Service worker : garde l'application disponible hors connexion.
    Le contenu (fiches, questions) est gardé à part par l'application, après saisie du code. */
-const VERSION = "flashover-v1";
+const VERSION = "flashover-v2";
 const SHELL = [
-  "./", "index.html", "css/app.css", "manifest.webmanifest", "icons/icon.svg",
+  "./", "index.html", "css/app.css", "manifest.webmanifest", "icons/favicon.png", "icons/logo-h.webp", "icons/logo-icon.webp",
   "js/app.js", "js/config.js", "js/ui.js", "js/store.js", "js/progress.js",
   "js/games/engine.js", "js/games/common.js", "js/games/quiz.js", "js/games/duel.js", "js/games/tableau.js",
   "js/revision/fiche.js", "js/formateur/formateur.js"
