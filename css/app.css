@@ -116,8 +116,52 @@ h1.title{font-size:clamp(26px,3vw + 14px,40px);margin:4px 0 6px;letter-spacing:-
 .fitem .go svg{width:20px;height:20px}
 .empty{background:var(--card);border-radius:12px;padding:22px;text-align:center;color:var(--muted);border:2px dashed var(--border)}
 .games{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-.game{border:0;text-align:left;background:var(--card);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);border-top:6px solid var(--gc);transition:transform .15s}
+.game{border:0;text-align:left;text-decoration:none;color:inherit;background:var(--card);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);border-top:6px solid var(--gc);transition:transform .15s}
 .game:hover{transform:translateY(-3px)}
+.game.excl{position:relative;background:linear-gradient(160deg,#FFF8DB 0%,#fff 45%);box-shadow:0 0 0 3px var(--yellow),var(--shadow)}
+.exclbadge{align-self:flex-start;background:var(--char);color:var(--yellow);font-size:12px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;border-radius:6px;padding:4px 9px}
+
+/* Réserve d'air (jeu exclusif ARI) */
+html.noscroll,html.noscroll body{overflow:hidden;overscroll-behavior:none;height:100%}
+.rsv{height:100vh;height:100dvh;min-height:0;overflow:hidden;background:#0B0D10;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.rsv-hud{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:12px 14px 6px;background:var(--char);color:#fff;flex:none}
+.rsv-g{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;min-width:190px;flex:1}
+.rsv-g span,.rsv-kpi span{font-size:12px;color:#cfd3d8;font-weight:700}
+.rsv-g b{font-size:16px;min-width:62px;text-align:right}
+.rsv-gbar{position:relative;height:10px;border-radius:6px;background:#3A3F46;overflow:hidden;min-width:60px}
+.rsv-gbar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;transition:width .2s}
+.rsv-gbar em{position:absolute;top:0;bottom:0;width:2px;background:#fff;opacity:.7}
+.rsv-kpi{display:flex;flex-direction:column;gap:2px}
+.rsv-kpi b{font-size:15px}
+.rsv-fat{min-width:120px}
+.rsv-stage{position:relative;flex:1;min-height:0;touch-action:none;overscroll-behavior:none;cursor:pointer}
+.rsv-stage canvas{position:absolute;inset:0;display:block}
+.rsv-msg{position:absolute;left:50%;top:12px;transform:translate(-50%,-8px);background:rgba(22,24,29,.92);color:#fff;border-left:5px solid var(--yellow);padding:9px 14px;border-radius:10px;font-weight:700;font-size:15px;max-width:92%;text-align:center;opacity:0;transition:.2s;pointer-events:none}
+.rsv-msg.on{opacity:1;transform:translate(-50%,0)}
+.rsv-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--char);flex:none}
+.rsv-bar .btn{font-size:15px;padding:11px 14px}
+.rsv-bar .btn.hot{background:var(--yellow);box-shadow:0 0 0 2px #fff}
+.rsv-modal{position:absolute;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:16px;z-index:30}
+.rsv-modal[hidden]{display:none}
+.rsv-box{background:#fff;border-radius:16px;padding:22px;max-width:480px;width:100%;border-top:8px solid #1F5FBF;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.rsv-box h2{margin:0 0 8px}
+.rsv-box p{font-size:17px;line-height:1.45}
+.rsv-box .row{flex-wrap:wrap;gap:8px}
+.rsv-ul{padding-left:18px;line-height:1.6}
+.rsv-kick{color:#1F5FBF;font-weight:900;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:6px;align-items:center}
+.rsv-kick svg{width:18px;height:18px}
+.rsv-story{font-size:clamp(16px,.5vw + 12px,19px);line-height:1.55}
+.rsv-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:14px 0}
+.rsv-facts div{background:var(--char);color:#fff;border-radius:10px;padding:8px 12px;display:flex;flex-direction:column}
+.rsv-facts span{font-size:12px;color:#cfd3d8}
+.rsv-facts b{font-size:19px}
+.rsv-rules{background:var(--soft);border-radius:12px;padding:10px 14px}
+.rsv-rules summary{cursor:pointer;font-weight:800;display:flex;gap:6px;align-items:center}
+.rsv-rules summary svg{width:18px;height:18px}
+.rsv-rules ul{line-height:1.55;padding-left:18px}
+.rsv-plan{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted)}
+.rsv-plan input{width:90px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:8px}
+@media (max-width:760px){.rsv-g{min-width:140px}.rsv-hud{gap:4px 10px;padding:8px 10px 4px}.rsv-kpi b{font-size:14px}.rsv-bar .btn{font-size:14px;padding:10px 11px}}
 .game .gicon{width:44px;height:44px;border-radius:11px;background:var(--gc);color:#fff;display:grid;place-items:center}
 .game .gicon svg{width:24px;height:24px}
 .game h3{margin:0;font-size:19px}

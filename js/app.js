@@ -21,19 +21,30 @@ export const GAMES = {
   duel: { name: "Duel d'équipes", icon: "trophy", color: "#1F5FBF", tags: ["En équipe", "Manœuvre"],
     desc: "Deux équipes s'affrontent comme à la télé : manches, vols, jokers et grande finale. Environ 20 minutes.",
     start: startDuelGame, ok: (m) => poolSize(m) >= 6 },
-  tableau: { name: "Tableau à étiquettes", icon: "table", color: "#C1121F", tags: ["Individuel", "En groupe"],
+  tableau: { name: "Tableau à étiquettes", icon: "table", color: "#C1121F", excl: true, tags: ["Individuel", "En groupe"],
     desc: "Replacez chaque étiquette dans la bonne case du tableau récapitulatif. Trois niveaux de difficulté.",
     start: startTableGame, ok: (m) => !!m.table },
   defi: { name: "Mission terrain", icon: "target", color: "#23964A", tags: ["Réel + virtuel", "En binôme", "Manœuvre"],
     desc: "Le jeu lance une mission : réalisez-la pour de vrai, chrono en main, puis vérifiez point par point avec la correction illustrée.",
     start: startDefiGame, ok: (m) => (m.defis || []).length > 0 },
-  cloche: { name: "Qu'est-ce qui cloche ?", icon: "zoom", color: "#7A3FB8", tags: ["Individuel", "En groupe"],
+  cloche: { name: "Qu'est-ce qui cloche ?", icon: "zoom", color: "#7A3FB8", excl: true, tags: ["Individuel", "En groupe"],
     desc: "Repérez les erreurs de port de la tenue de feu sur le personnage. De nouvelles erreurs à chaque manche.",
     start: startClocheGame, ok: (m) => !!m.cloche },
   situation: { name: "Mises en situation", icon: "flame", color: "#B5179E", tags: ["Individuel", "En groupe", "Calculs"],
     desc: "Des scénarios illustrés et réalistes, étape par étape : décisions à prendre, calculs d'autonomie, manomètre sous les yeux.",
-    start: startSituationGame, ok: (m) => (m.situations || []).length > 0 }
+    start: startSituationGame, ok: (m) => (m.situations || []).length > 0 },
+  reserve: { name: "Réserve d'air", icon: "mask", color: "#1F5FBF", excl: true, tags: ["Individuel", "Tour par tour", "Plans infinis"],
+    desc: "Engagé sous ARI dans un bâtiment enfumé : trouvez la victime, équipez-la de la cagoule et sortez-la avant la panne d'air. Chaque geste coûte des bars.",
+    start: lazyGame(() => import("./games/reserve.js"), "startReserveGame"), ok: () => true }
 };
+/* Jeux lourds : chargés seulement au lancement */
+function lazyGame(load, fn) {
+  return (ctx) => {
+    let stop = null, dead = false;
+    load().then((mod) => { if (!dead) stop = mod[fn](ctx) || null; });
+    return () => { dead = true; if (stop) stop(); };
+  };
+}
 
 /* ---- Données ---- */
 export function platform() {
@@ -111,12 +122,14 @@ function modulePage(m, tab) {
   app.innerHTML = frame(esc(m.title), m.color);
   const page = app.querySelector("#page");
   const fiches = visibleFiches(m), s = progress.stats(m);
-  const games = (m.games || Object.keys(GAMES)).filter((g) => GAMES[g] && GAMES[g].ok(m));
+  const games = (m.games || Object.keys(GAMES)).filter((g) => GAMES[g] && GAMES[g].ok(m))
+    .sort((a, b) => (GAMES[b].excl ? 1 : 0) - (GAMES[a].excl ? 1 : 0));
   let body;
   if (tab === "jeux") {
     body = games.length ? '<div class="games">' + games.map((g) => {
       const G = GAMES[g], best = progress.game(m.id, g).best;
-      return '<a class="game" href="#/m/' + m.id + "/jeu/" + g + '" style="--gc:' + G.color + '"><span class="gicon">' + ic(G.icon) + "</span><h3>" + G.name + "</h3><p>" + G.desc + "</p>" +
+      return '<a class="game' + (G.excl ? " excl" : "") + '" href="#/m/' + m.id + "/jeu/" + g + '" style="--gc:' + G.color + '">' +
+        (G.excl ? '<span class="exclbadge">★ Exclusif à ce module</span>' : "") + '<span class="gicon">' + ic(G.icon) + "</span><h3>" + G.name + "</h3><p>" + G.desc + "</p>" +
         '<div class="tagrow">' + G.tags.map((t) => '<span class="badge">' + t + "</span>").join("") + (best != null ? '<span class="badge">Record : ' + best + "</span>" : "") + "</div></a>";
     }).join("") + "</div>" : '<div class="empty">Les jeux de ce module arrivent bientôt.</div>';
   } else {
