@@ -84,7 +84,7 @@ export function startSituationGame(ctx) {
   function menu() {
     app.innerHTML = '<div class="screen qscreen">' + gameBar({ badge: "Mises en situation", color: COLOR, label: mod.title }) +
       '<main><div class="panel" style="border-top-color:' + COLOR + '"><h1>Mises en situation</h1>' +
-      '<p class="lead">Vous êtes engagé sous ARI. À chaque étape : lisez la situation, observez le tableau de bord, puis décidez ou calculez. Les pressions et les bouteilles changent à chaque partie.</p>' +
+      '<p class="lead">Vous êtes sur le terrain. À chaque étape : lisez la situation, puis décidez ou calculez. Les erreurs critiques sont signalées et un débriefing conclut chaque scénario.</p>' +
       '<div class="row" style="margin:6px 0 16px"><button class="btn big" style="background:' + COLOR + ';color:#fff" id="rand">' + ic("play") + "Situation au hasard</button></div>" +
       '<div class="sitlist">' + list.map((s, i) => {
         const b = progress.game(mod.id, "situation-" + s.id).best;
