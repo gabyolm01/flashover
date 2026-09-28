@@ -582,3 +582,41 @@ body:has(.screen.tableplay) .toast{top:84px;bottom:auto}
   .hero-icon{display:none}
   .hero p{max-width:none}
 }
+
+/* Mayday ! (jeu exclusif TASSS) */
+.mdy{height:100vh;height:100dvh;min-height:0;overflow:hidden;background:#0B0D10;color:#fff;user-select:none;-webkit-user-select:none}
+.mdy-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px;background:#1c1f25;flex:none}
+.mdy-hud div{background:#262a31;border-radius:8px;padding:5px 8px}.mdy-hud span{display:block;font-size:11px;color:#9aa1ab}.mdy-hud b{font-size:17px}
+.mdy-main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 24px;max-width:780px;width:100%;margin:0 auto}
+.mdy-main h1{margin:6px 0 8px;font-size:clamp(22px,1.5vw + 14px,30px)}
+.mdy-main p{line-height:1.5}
+.mdy-h{margin:10px 0 8px;font-size:18px;color:var(--yellow)}
+.mdy-scene{position:relative;height:170px;border-radius:14px;background:#23272F center/cover no-repeat;margin-bottom:10px}
+.mdy-scene span{position:absolute;left:10px;top:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;border-radius:6px;padding:3px 8px}
+.mdy-card{background:#1c1f25;border-left:5px solid var(--red);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.mdy-card p{margin:0 0 8px}
+.mdy .rsv-rules{background:#1c1f25;color:#fff}
+.mdy-choice{display:block;width:100%;text-align:left;margin:6px 0;background:#262a31;color:#fff;border:2px solid transparent;border-radius:10px;padding:12px 14px;font:inherit;cursor:pointer}
+.mdy-choice.seen{border-color:var(--ok);background:#173b23}.mdy-choice span{display:block;margin-top:4px;font-weight:400}
+.mdy-col{display:grid;gap:8px}.mdy-col .btn{justify-content:flex-start;white-space:normal;text-align:left}
+.mdy-radio{background:#2a2e35;border:3px solid #444a53;border-radius:18px;padding:12px}
+.mdy-screen{background:#a9c7a0;color:#11220f;font-family:Consolas,monospace;border-radius:8px;padding:10px;min-height:92px;font-size:15px;line-height:1.4}
+.mdy-screen .hint{display:block;margin-top:6px;color:#7a1010;font-weight:700}
+.mdy-ptt{width:100%;margin-top:10px}
+.btn.mdy-y{background:var(--yellow);color:var(--char);box-shadow:none}
+.mdy-grp{margin:12px 0 4px;font-size:12px;font-weight:800;color:var(--yellow);text-transform:uppercase;letter-spacing:.05em}
+.mdy-tags{display:flex;flex-wrap:wrap;gap:6px}
+.mdy-tag{border:0;border-radius:18px;padding:8px 12px;font:inherit;font-size:14px;background:#3a3f48;color:#fff;cursor:pointer;text-align:left}
+.mdy-tag:disabled{opacity:.3}.mdy-tag.on{background:var(--yellow);color:var(--char)}
+.mdy-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mdy-act{border:2px solid #3a3f48;background:#1f2329;color:#fff;border-radius:12px;padding:10px;text-align:left;font:inherit;font-size:13px;cursor:pointer;min-height:58px}
+.mdy-act b{display:block;font-size:15px;margin-bottom:2px}.mdy-act.on{border-color:var(--ok);background:#173b23}.mdy-act.warn{border-color:#E07800}
+.mdy-log{font-size:13px;color:#cfd3d8;max-height:140px;overflow:auto;background:#15181d;border-radius:8px;padding:8px;margin-top:10px}
+.mdy-log div{padding:2px 0;border-bottom:1px solid #22262d}
+.mdy-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:grid;place-items:center;padding:14px;z-index:1000}
+.mdy-box{background:#fff;color:var(--char);border-radius:14px;padding:18px;max-width:500px;width:100%;border-top:8px solid var(--red);max-height:92dvh;overflow:auto}
+.mdy-box h2{color:var(--red);margin:0 0 6px}.mdy-slow{font-size:12px;color:var(--muted);margin:0 0 8px}
+.mdy-box .btn{display:flex;width:100%;justify-content:flex-start;text-align:left;white-space:normal;margin:6px 0;background:var(--soft);box-shadow:none}
+.mdy-box .btn.red{background:var(--red);color:#fff;justify-content:center}
+.mdy .panel.result{color:var(--char)}
+@media (max-width:560px){.mdy-acts{grid-template-columns:1fr}.mdy-hud{grid-template-columns:repeat(2,1fr)}}

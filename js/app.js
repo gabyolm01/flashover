@@ -35,7 +35,10 @@ export const GAMES = {
     start: startSituationGame, ok: (m) => (m.situations || []).length > 0 },
   reserve: { name: "Réserve d'air", icon: "mask", color: "#1F5FBF", excl: true, tags: ["Individuel", "Tour par tour", "Plans infinis"],
     desc: "Engagé sous ARI dans un bâtiment enfumé : trouvez la victime, équipez-la de la cagoule et sortez-la avant la panne d'air. Chaque geste coûte des bars.",
-    start: lazyGame(() => import("./games/reserve.js"), "startReserveGame"), ok: () => true }
+    start: lazyGame(() => import("./games/reserve.js"), "startReserveGame"), ok: () => true },
+  mayday: { name: "Mayday !", icon: "rescue", color: "#C1121F", excl: true, tags: ["Individuel", "Radio NELAR", "999 scénarios"],
+    desc: "Piégé sous ARI : faites le point, passez votre message de détresse à la radio, puis tenez jusqu'aux secours. Chaque geste compte.",
+    start: lazyGame(() => import("./games/mayday.js"), "startMaydayGame"), ok: () => true }
 };
 /* Jeux lourds : chargés seulement au lancement */
 function lazyGame(load, fn) {
