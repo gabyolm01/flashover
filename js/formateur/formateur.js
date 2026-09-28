@@ -345,7 +345,7 @@ function blockForm(b, i) {
     case "image": return inp("src", "Adresse de l'image (lien web)", b.src, "Clic droit sur une image en ligne > « Copier l'adresse de l'image ».") +
       (b.src ? '<img src="' + esc(b.src) + '" style="max-height:160px;border-radius:8px;margin-bottom:10px" alt="">' : "") +
       inp("caption", "Légende", b.caption) + inp("credit", "Source / crédit", b.credit, "Indiquez d'où vient l'image.");
-    case "video": return inp("url", "Lien YouTube (ou adresse d'un fichier vidéo .mp4)", b.url, youtubeId(b.url) || /\.(mp4|webm)(\?|$)/i.test(b.url || "") ? "Vidéo reconnue ✔" : "Collez le lien de la vidéo YouTube.") +
+    case "video": return inp("url", "Lien YouTube ou Dailymotion (ou adresse d'un fichier vidéo .mp4)", b.url, youtubeId(b.url) || /\.(mp4|webm)(\?|$)|dailymotion\.com\/(embed\/)?video\/|dai\.ly\//i.test(b.url || "") ? "Vidéo reconnue ✔" : "Collez le lien de la vidéo YouTube ou Dailymotion.") +
       inp("title", "Titre", b.title) + inp("caption", "Légende", b.caption) + inp("credit", "Source / crédit", b.credit);
     case "table": return inp("title", "Titre", b.title) + inp("head", "En-têtes (séparés par |)", (b.head || []).join(" | ")) +
       ta("rows", "Lignes (une par ligne, cellules séparées par |)", (b.rows || []).map((r) => r.join(" | ")).join("\n"), 5);

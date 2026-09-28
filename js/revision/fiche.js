@@ -28,6 +28,13 @@ function blockHTML(b, i) {
           '<video controls preload="metadata" playsinline src="' + esc(b.url) + '"' + (b.poster ? ' poster="' + esc(b.poster) + '"' : "") + "></video>" +
           (b.caption || b.credit ? '<div class="caption">' + fmt(b.caption || "") + (b.credit ? " <i>(" + esc(b.credit) + ")</i>" : "") + "</div>" : "") + "</div>";
       }
+      const dm = String(b.url || "").match(/(?:dailymotion\.com\/(?:embed\/)?video\/|dai\.ly\/)([a-zA-Z0-9]+)/);
+      if (dm) {
+        return '<div class="blk blk-media">' + (b.title ? "<h3>" + ic("video") + esc(b.title) + "</h3>" : "") +
+          '<div class="video"><iframe src="https://geo.dailymotion.com/player.html?video=' + dm[1] + '" title="' + esc(b.title || "Vidéo") + '" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; web-share" allowfullscreen></iframe></div>' +
+          '<div class="caption">' + (b.caption ? fmt(b.caption) + " · " : "") + (b.credit ? "<i>(" + esc(b.credit) + ")</i> · " : "") +
+          '<a href="https://www.dailymotion.com/video/' + dm[1] + '" target="_blank" rel="noopener">Ouvrir sur Dailymotion</a></div></div>';
+      }
       const id = youtubeId(b.url);
       if (!id) return '<div class="blk empty">' + ic("video") + " Vidéo à ajouter" + (b.title ? " : " + esc(b.title) : "") + "</div>";
       return '<div class="blk blk-media">' + (b.title ? "<h3>" + ic("video") + esc(b.title) + "</h3>" : "") +
