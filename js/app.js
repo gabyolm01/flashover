@@ -145,9 +145,9 @@ function modulePage(m, tab) {
         '<span><div class="ft">' + esc(f.title) + '</div><div class="fm">' + (f.minutes ? f.minutes + " min" : "") +
         (r.best != null ? " · test : " + r.best + " %" : "") + '</div></span><span class="go">' + ic("next") + "</span></a>";
     };
-    body = byComp.map((x) => '<div class="comp"><h3><span class="num">' + (x.i + 1) + "</span>" + esc(x.c.title) + "</h3>" +
-      (x.list.length ? '<div class="fiches">' + x.list.map(item).join("") + "</div>" : '<div class="empty small">Fiche en préparation.</div>') + "</div>").join("") +
-      (orphans.length ? '<div class="comp"><h3>Autres fiches</h3><div class="fiches">' + orphans.map(item).join("") + "</div></div>" : "");
+    body = (orphans.length ? '<div class="comp"><h3>Pour commencer</h3><div class="fiches">' + orphans.map(item).join("") + "</div></div>" : "") +
+      byComp.map((x) => '<div class="comp"><h3><span class="num">' + (x.i + 1) + "</span>" + esc(x.c.title) + "</h3>" +
+      (x.list.length ? '<div class="fiches">' + x.list.map(item).join("") + "</div>" : '<div class="empty small">Fiche en préparation.</div>') + "</div>").join("");
     if (!comps.length && !fiches.length) body = '<div class="empty">Le contenu de ce module est en préparation.</div>';
   }
   page.innerHTML =

@@ -322,9 +322,10 @@ export function startMaydayGame(ctx) {
     else { G.good.push("Balise déclenchée après le message radio."); radioScreen("🔔 Balise déclenchée. Les secours pourront te localiser au son."); }
   };
   /* ----- 4. Tenir ----- */
-  H.survie = () => { G.phase = "survie"; closeModal(); G.tiles = G.tiles || shuffle(TILES); renderSurvie(); logm("Tu te mets en condition d'attente."); };
+  H.survie = () => { G.phase = "survie"; closeModal(); renderSurvie(); logm("Tu te mets en condition d'attente."); };
   function renderSurvie() {
     if (!G || G.phase !== "survie") return;
+    G.tiles = G.tiles || shuffle(TILES);
     frame('<h2 class="mdy-h">③ Tenir jusqu\'aux secours</h2><p class="small muted" style="margin-top:0">Le temps défile (× 6). Chaque action ouvre un choix, pendant lequel le temps ralentit.</p>' +
       '<div class="mdy-acts">' + G.tiles.map(([id, n, d]) => '<button class="mdy-act' + (G.on[id] ? (G.on[id].q === 2 ? " on" : " warn") : "") + '" data-a="act" data-v="' + id + '"><b>' + n + "</b>" + esc(G.on[id] ? G.on[id].txt : d) + "</button>").join("") + "</div>" +
       '<div class="mdy-log" id="mlog">' + G.log.slice(-10).reverse().map((x) => "<div>" + x + "</div>").join("") + "</div>");

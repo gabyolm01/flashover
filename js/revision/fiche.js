@@ -15,7 +15,7 @@ function blockHTML(b, i) {
     case "key": return '<div class="blk blk-key"><h3>' + ic("target") + esc(b.title || "À retenir") + "</h3><ul>" +
       (b.items || []).filter(Boolean).map((x) => "<li><span>" + fmt(x) + "</span></li>").join("") + "</ul></div>";
     case "warn": return '<div class="blk blk-warn"><h3>' + ic("warn") + esc(b.title || "Attention") + "</h3>" + paras(b.text) + "</div>";
-    case "steps": return '<div class="blk blk-steps" data-steps="' + i + '"><h3>' + ic("list") + esc(b.title || "Étape par étape") + '</h3><div class="stepper"></div></div>';
+    case "steps": return '<div class="blk blk-steps" data-steps="' + i + '"><h3>' + ic("list") + esc(b.title || "Étape par étape") + '</h3><div class="stepper"></div>' + (b.credit ? '<div class="caption"><i>(' + esc(b.credit) + ')</i></div>' : "") + "</div>";
     case "schema": return '<div class="blk blk-schema"><button class="btn zoom" data-zoom="' + i + '">' + ic("zoom") + "Agrandir</button>" +
       (b.title ? '<h3 style="margin:0 0 10px">' + esc(b.title) + "</h3>" : "") + '<div class="schema">' + (b.svg || "") + "</div>" +
       (b.caption ? '<div class="caption">' + fmt(b.caption) + "</div>" : "") + "</div>";

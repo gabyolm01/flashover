@@ -68,9 +68,11 @@ function tenueSchema(fig) {
   ari.questions = parseQuestions(path.join(seed, "ari-questions.txt"), "ari-");
   const tasss = require(path.join(seed, "modules", "tasss.js"));
   tasss.questions = parseQuestions(path.join(seed, "tasss-questions.txt"), "tasss-");
+  const etb = require(path.join(seed, "modules", "etb.js"));
+  etb.questions = parseQuestions(path.join(seed, "etb-questions.txt"), "etb-");
   const schema = tenueSchema(figureSVG(new Set()));
   epi.fiches.forEach((f) => (f.blocks || []).forEach((b) => { if (b.svg === "__FIGURE_TENUE__") b.svg = schema; }));
-  const modules = [epi, lances, ari, tasss].concat(require(path.join(seed, "modules", "autres.js")));
+  const modules = [epi, lances, ari, tasss, etb];
 
   const content = { platform };
   modules.forEach((m) => { content["module:" + m.id] = m; });
