@@ -620,3 +620,36 @@ body:has(.screen.tableplay) .toast{top:84px;bottom:auto}
 .mdy-box .btn.red{background:var(--red);color:#fff;justify-content:center}
 .mdy .panel.result{color:var(--char)}
 @media (max-width:560px){.mdy-acts{grid-template-columns:1fr}.mdy-hud{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== Jeu « Établissez ! » (module Établissements) ===== */
+.etz{height:100vh;height:100dvh;min-height:0;overflow:hidden;background:var(--bg)}
+.etz-main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.etz .wrap{max-width:760px;margin:0 auto;padding:14px 16px 40px}
+.etz h1{margin:6px 0 8px;font-size:clamp(22px,1.5vw + 14px,30px)}
+.etz-card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 1px 3px #0002;margin:10px 0}
+.etz .msg{background:var(--char);color:#9FF0C8;font-family:Consolas,monospace;border-radius:10px;padding:12px;font-size:14px;white-space:pre-line}
+.etz-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:12px 16px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;background:var(--char);color:#fff}
+.etz-btn.c{background:#138A83}.etz-btn.r{background:var(--red)}.etz-btn.g{background:#E9E4D8;color:var(--char)}
+.etz-btn:disabled{opacity:.4;cursor:default}
+.etz-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.etz-row.end{justify-content:flex-end}
+.etz .opt{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.etz .opt button{border:2px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;cursor:pointer;text-align:left;color:var(--char)}
+.etz .opt button.on{border-color:#138A83;background:#E3F4F2;font-weight:700}
+.etz .q{font-weight:700;margin-top:14px}
+.etz .coupe{background:#fff;border-radius:var(--radius);box-shadow:0 1px 3px #0002;margin:10px 0;overflow:hidden}
+.etz .coupe svg{display:block;width:100%;height:auto;max-height:62vh}
+.etz .hose{fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke-dashoffset 1.4s ease}
+.etz-slot{min-height:46px;border:2px dashed var(--border);border-radius:10px;padding:6px;display:flex;flex-wrap:wrap;gap:6px;cursor:pointer}
+.etz-slot.on{border-color:#138A83;background:#F0FAF9}
+.etz .chip{background:var(--char);color:#fff;border-radius:8px;padding:6px 8px;font-size:14px;cursor:pointer}
+.etz .grp{margin:8px 0}.etz .grp .t{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.etz .tiles{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.etz .tile{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 9px;font-size:14px;font-family:inherit;cursor:pointer;color:var(--char)}
+.etz .log{font-size:14px}.etz .log div{padding:4px 0;border-bottom:1px solid var(--border)}
+.etz .item{padding:8px 10px;border-radius:8px;margin:6px 0;font-size:14px}
+.etz .item.ok{background:var(--ok-bg)}.etz .item.ko{background:var(--ko-bg)}.etz .item.crit{background:var(--red);color:#fff}
+.etz-score{font-size:44px;font-weight:900;color:#138A83}
+.etz .cat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:15px}
+.etz .gauge{display:flex;align-items:center;gap:14px}
+.etz input[type=number]{font-size:16px;padding:10px;border-radius:10px;border:2px solid var(--border);width:110px;font-family:inherit}

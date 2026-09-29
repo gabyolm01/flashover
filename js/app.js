@@ -38,7 +38,10 @@ export const GAMES = {
     start: lazyGame(() => import("./games/reserve.js"), "startReserveGame"), ok: () => true },
   mayday: { name: "Mayday !", icon: "rescue", color: "#C1121F", excl: true, tags: ["Individuel", "Radio NELAR", "999 scénarios"],
     desc: "Piégé sous ARI : faites le point, passez votre message de détresse à la radio, puis tenez jusqu'aux secours. Chaque geste compte.",
-    start: lazyGame(() => import("./games/mayday.js"), "startMaydayGame"), ok: () => true }
+    start: lazyGame(() => import("./games/mayday.js"), "startMaydayGame"), ok: () => true },
+  etablissez: { name: "Établissez !", icon: "hose", color: "#138A83", excl: true, tags: ["Individuel", "Tour par tour", "999 interventions"],
+    desc: "Chef d'agrès du FPT : choisissez le dispositif, commandez vos binômes, puis ouvrez. La pression à la lance dira si vous aviez raison.",
+    start: lazyGame(() => import("./games/etablissez.js"), "startEtablissezGame"), ok: () => true }
 };
 /* Jeux lourds : chargés seulement au lancement */
 function lazyGame(load, fn) {
