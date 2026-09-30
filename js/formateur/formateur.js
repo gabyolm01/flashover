@@ -143,7 +143,10 @@ function dashboard(app, api) {
     try {
       await store.saveModule(m);
       const order = (api.platform().modules || []).concat(id);
-      await store.savePlatform(Object.assign(clone(api.platform()), { modules: order }));
+      // Le nouveau module rejoint la formation choisie sur cet appareil (sinon il resterait invisible pour les stagiaires)
+      const cur = api.currentFormation && api.currentFormation();
+      const formations = (api.platform().formations || []).map((x) => cur && x.id === cur.id ? Object.assign({}, x, { modules: (x.modules || []).concat(id) }) : x);
+      await store.savePlatform(Object.assign(clone(api.platform()), { modules: order, formations }));
       location.hash = "#/formateur/m/" + id;
     } catch (e) { toast("Échec : " + e.message); }
   };

@@ -64,6 +64,20 @@ export function modules() {
     return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
   });
 }
+/* Formations (chef d'équipe, SST…) : chacune regroupe ses modules. Sans formations définies, tous les modules s'affichent. */
+const FKEY = "flashover-formation";
+export function formations() { return platform().formations || []; }
+export function currentFormation() {
+  const F = formations();
+  if (!F.length) return null;
+  let id = null; try { id = localStorage.getItem(FKEY); } catch (e) {}
+  return F.find((f) => f.id === id) || null;
+}
+function setFormation(id) { try { if (id) localStorage.setItem(FKEY, id); else localStorage.removeItem(FKEY); } catch (e) {} }
+function formationModules() {
+  const f = currentFormation();
+  return f ? modules().filter((m) => (f.modules || []).includes(m.id)) : modules();
+}
 export function moduleById(id) { return ((store.content && store.content.modules) || {})[id]; }
 const luesWord = (n) => (n > 1 ? "fiches lues" : "fiche lue");
 const visibleFiches = (m) => (m.fiches || []).filter((f) => !f.hidden);
@@ -81,7 +95,7 @@ function frame(crumb, color) {
 /* ---- Écran d'accès ---- */
 function gate(message) {
   app.innerHTML = '<div class="gate"><div class="card"><div class="logo">' + logoHTML() + "</div>" +
-    "<p>Plateforme de révision des futurs chefs d'équipe.</p>" +
+    "<p>Plateforme de révision : chef d'équipe sapeur-pompier et sauveteur secouriste du travail.</p>" +
     '<form id="gateForm"><input class="codeinput" id="code" type="password" autocomplete="current-password" placeholder="Code d\'accès" aria-label="Code d\'accès" required>' +
     '<div class="err" id="err">' + (message || "") + "</div>" +
     '<button class="btn red big block" type="submit">' + ic("lock") + "Entrer</button></form>" +
@@ -102,14 +116,25 @@ function gate(message) {
 }
 
 /* ---- Accueil ---- */
+function chooser() {
+  const P = platform();
+  app.innerHTML = frame("Choisir ma formation");
+  const page = app.querySelector("#page");
+  page.innerHTML = '<section class="hero"><img class="hero-icon" src="icons/logo-icon.webp" alt=""><h1>' + esc(P.name || "Flashover") + "</h1><p>Quelle formation suivez-vous ?</p></section>" +
+    '<div class="modules formations">' + formations().map((f) => {
+      const n = modules().filter((m) => (f.modules || []).includes(m.id)).length;
+      return '<a class="mod" href="#/formation/' + f.id + '" style="--mc:' + f.color + '"><span class="micon">' + ic(f.icon) + "</span><h2>" + esc(f.title) + "</h2><p>" + esc(f.short || "") + '</p><span class="proglabel">' + plural(n, "module") + "</span></a>";
+    }).join("") + "</div>";
+}
 function home() {
-  const P = platform(), mods = modules();
+  if (formations().length && !currentFormation()) return chooser();
+  const P = platform(), F = currentFormation(), mods = formationModules();
   app.innerHTML = frame();
   const page = app.querySelector("#page");
   let read = 0, total = 0;
   mods.forEach((m) => { const s = progress.stats(m); read += s.read; total += s.total; });
   page.innerHTML =
-    '<section class="hero"><img class="hero-icon" src="icons/logo-icon.webp" alt=""><h1>' + esc(P.name || "Flashover") + "</h1><p>" + fmt(P.tagline || "Révisez tous les modules de chef d'équipe, seul ou en équipe, et passez au niveau supérieur.") + "</p>" +
+    '<section class="hero"' + (F ? ' style="--mc:' + F.color + '"' : "") + '><img class="hero-icon" src="icons/logo-icon.webp" alt=""><h1>' + esc(F ? F.title : P.name || "Flashover") + "</h1><p>" + fmt((F && F.tagline) || P.tagline || "Révisez tous les modules, seul ou en équipe, et passez au niveau supérieur.") + "</p>" +
       '<div class="stats"><span class="pill"><b>' + mods.length + "</b> modules</span><span class=\"pill\"><b>" + read + "/" + total + '</b> ' + luesWord(total) + '</span></div></section>' +
     '<div class="section-title">Modules</div><div class="modules">' + mods.map((m) => {
       const s = progress.stats(m), soon = m.status !== "ready";
@@ -119,7 +144,7 @@ function home() {
         (s.total ? '<span class="proglabel">' + s.read + "/" + s.total + ' ' + luesWord(s.total) + '</span><span class="prog"><i style="width:' + s.pct + '%"></i></span>'
           : '<span class="proglabel">' + plural((m.competences || []).length, "compétence") + "</span>") + "</a>";
     }).join("") + "</div>" +
-    '<div class="links"><a class="btn" href="#/progression">' + ic("chart") + 'Ma progression</a><button class="btn" id="logout">' + ic("logout") + "Changer de code</button></div>";
+    '<div class="links">' + (F ? '<a class="btn" href="#/formation">' + ic("back") + "Changer de formation</a>" : "") + '<a class="btn" href="#/progression">' + ic("chart") + 'Ma progression</a><button class="btn" id="logout">' + ic("logout") + "Changer de code</button></div>";
   page.querySelector("#logout").onclick = () => { if (confirm("Se déconnecter ? Il faudra retaper le code d'accès.")) { store.logout(); gate(); } };
 }
 
@@ -171,7 +196,7 @@ function progressionPage() {
   app.innerHTML = frame("Ma progression");
   const page = app.querySelector("#page");
   page.classList.add("narrow");
-  const mods = modules();
+  const mods = formationModules();
   page.innerHTML = '<h1 class="title">Ma progression</h1><p class="lead">Elle est enregistrée uniquement sur cet appareil.</p>' +
     mods.map((m) => {
       const s = progress.stats(m);
@@ -209,9 +234,13 @@ async function route() {
   window.scrollTo(0, 0);
   if (!parts.length) return home();
   if (parts[0] === "progression") return progressionPage();
+  if (parts[0] === "formation") {
+    if (parts[1] && formations().some((f) => f.id === parts[1])) { setFormation(parts[1]); location.hash = "#/"; return; }
+    return chooser();
+  }
   if (parts[0] === "formateur") {
     const f = await import("./formateur/formateur.js");
-    cleanup = f.openFormateur(app, parts.slice(1), { platform, modules, moduleById, GAMES }) || null;
+    cleanup = f.openFormateur(app, parts.slice(1), { platform, modules, moduleById, GAMES, currentFormation }) || null;
     return;
   }
   if (parts[0] === "m") {

@@ -88,7 +88,8 @@ export function startSituationGame(ctx) {
       '<div class="row" style="margin:6px 0 16px"><button class="btn big" style="background:' + COLOR + ';color:#fff" id="rand">' + ic("play") + "Situation au hasard</button></div>" +
       '<div class="sitlist">' + list.map((s, i) => {
         const b = progress.game(mod.id, "situation-" + s.id).best;
-        return '<button class="sitcard" data-s="' + i + '"><span class="sitimg" style="background-image:url(\'' + esc(s.img || "") + '\')"></span>' +
+        return '<button class="sitcard" data-s="' + i + '">' + (s.img ? '<span class="sitimg" style="background-image:url(\'' + esc(s.img) + '\')"></span>'
+          : '<span class="sitimg noimg" style="--mc:' + esc(mod.color || COLOR) + '">' + ic(mod.icon || "flame") + "</span>") +
           '<span class="sitbody"><span class="sittag">' + esc(s.tag || "") + '</span><b>' + esc(s.title) + '</b><span class="small muted">' +
           (s.steps || []).filter((x) => x.type !== "scene").length + " décisions" + (b != null ? " · record " + b + " %" : "") + "</span></span></button>";
       }).join("") + "</div></div></main></div>";

@@ -43,7 +43,13 @@ export const ICONS = {
   nozzle: '<path d="M3 14h7l3-2h4l4-2v6l-4-2h-4l-3-2"/><path d="M5 14v4M8 14v4"/>',
   mask: '<path d="M6 8c0-2 3-4 6-4s6 2 6 4v5c0 3-3 7-6 7s-6-4-6-7z"/><circle cx="12" cy="15" r="2"/><path d="M9 9h6"/>',
   rescue: '<circle cx="8" cy="5" r="2"/><path d="M8 7v6l-3 6M8 13l3 6M5 10h6"/><path d="M14 13h7M17 10l3 3-3 3"/>',
-  hose: '<path d="M3 18c4 0 4-6 8-6s4 6 8 6"/><circle cx="3" cy="18" r="1.5"/><path d="M19 18h2v-3"/><path d="M11 12V5h4"/>'
+  hose: '<path d="M3 18c4 0 4-6 8-6s4 6 8 6"/><circle cx="3" cy="18" r="1.5"/><path d="M19 18h2v-3"/><path d="M11 12V5h4"/>',
+  // SST
+  cross: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+  shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  phone: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
+  heart: '<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/><path d="M5 12h4l1.5-3 3 6 1.5-3h4"/>'
 };
 export function ic(n) {
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || ICONS.help) + "</svg>";

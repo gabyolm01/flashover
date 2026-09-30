@@ -72,7 +72,10 @@ function tenueSchema(fig) {
   etb.questions = parseQuestions(path.join(seed, "etb-questions.txt"), "etb-");
   const schema = tenueSchema(figureSVG(new Set()));
   epi.fiches.forEach((f) => (f.blocks || []).forEach((b) => { if (b.svg === "__FIGURE_TENUE__") b.svg = schema; }));
-  const modules = [epi, lances, ari, tasss, etb];
+  // Formation SST : un fichier de questions par module (seed/sst-questions/<id>.txt)
+  const sst = require(path.join(seed, "modules", "sst.js"));
+  sst.forEach((m) => { m.questions = parseQuestions(path.join(seed, "sst-questions", m.id + ".txt"), m.id + "-"); });
+  const modules = [epi, lances, ari, tasss, etb].concat(sst);
 
   const content = { platform };
   modules.forEach((m) => { content["module:" + m.id] = m; });
