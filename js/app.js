@@ -87,7 +87,7 @@ const visibleFiches = (m) => (m.fiches || []).filter((f) => !f.hidden);
 
 /* ---- Cadre des pages ---- */
 function frame(crumb, color) {
-  return '<header class="bar"><a class="logo" href="' + (formations().length ? "#/formation" : "#/") + '">' + logoHTML() + "</a>" +
+  return '<header class="bar"><a class="logo" href="#/">' + logoHTML() + "</a>" +
     (crumb ? '<span class="crumb hide-m">' + crumb + "</span>" : "") + '<span class="spacer"></span>' +
     '<a class="iconbtn" href="#/progression" title="Ma progression">' + ic("chart") + "</a>" +
     '<a class="iconbtn" href="#/formateur" title="Mode formateur">' + ic("key") + "</a>" +
@@ -181,7 +181,8 @@ function modulePage(m, tab) {
       (x.list.length ? '<div class="fiches">' + x.list.map(item).join("") + "</div>" : '<div class="empty small">Fiche en préparation.</div>') + "</div>").join("");
     if (!comps.length && !fiches.length) body = '<div class="empty">Le contenu de ce module est en préparation.</div>';
   }
-  page.innerHTML = '<a class="backlink" href="#/">' + ic("back") + "Tous les modules</a>" +
+  const F = currentFormation();
+  page.innerHTML = '<a class="backlink" href="' + (F ? "#/formation/" + F.id : "#/") + '">' + ic("back") + "Tous les modules</a>" +
     '<div class="modhead"><span class="micon">' + ic(m.icon) + "</span><div><h1>" + esc(m.title) + "</h1><p>" +
       (s.total ? s.read + "/" + s.total + " " + luesWord(s.total) + (s.avg != null ? " · tests : " + s.avg + " % en moyenne" : "") : esc(m.short || "")) + "</p></div></div>" +
     '<nav class="tabs"><a class="tab' + (tab !== "jeux" ? " on" : "") + '" href="#/m/' + m.id + '">' + ic("book") + "Révisions</a>" +
@@ -235,10 +236,10 @@ async function route() {
   if (!store.content) return;
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   window.scrollTo(0, 0);
-  if (!parts.length) return home();
+  if (!parts.length) return formations().length ? chooser() : home();
   if (parts[0] === "progression") return progressionPage();
   if (parts[0] === "formation") {
-    if (parts[1] && formations().some((f) => f.id === parts[1])) { setFormation(parts[1]); location.hash = "#/"; return; }
+    if (parts[1] && formations().some((f) => f.id === parts[1])) { setFormation(parts[1]); return home(); }
     return chooser();
   }
   if (parts[0] === "formateur") {
