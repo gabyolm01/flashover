@@ -656,3 +656,4 @@ body:has(.screen.tableplay) .toast{top:84px;bottom:auto}
 
 .sitimg.noimg{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--mc),#16181D);color:#fff}
 .sitimg.noimg svg{width:54px;height:54px;opacity:.9}
+.backlink{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;font-weight:700;color:var(--char);text-decoration:none}.backlink svg{width:20px;height:20px}.backlink:hover{color:var(--red)}

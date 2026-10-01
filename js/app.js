@@ -41,7 +41,10 @@ export const GAMES = {
     start: lazyGame(() => import("./games/mayday.js"), "startMaydayGame"), ok: () => true },
   etablissez: { name: "Établissez !", icon: "hose", color: "#138A83", excl: true, tags: ["Individuel", "Tour par tour", "999 interventions"],
     desc: "Chef d'agrès du FPT : choisissez le dispositif, commandez vos binômes, puis ouvrez. La pression à la lance dira si vous aviez raison.",
-    start: lazyGame(() => import("./games/etablissez.js"), "startEtablissezGame"), ok: () => true }
+    start: lazyGame(() => import("./games/etablissez.js"), "startEtablissezGame"), ok: () => true },
+  victime: { name: "Victime !", icon: "heart", color: "#C1121F", excl: true, tags: ["Individuel", "Tour par tour", "999 victimes"],
+    desc: "Une victime au hasard : protégez, examinez dans l'ordre, faites alerter, faites les bons gestes. Chaque seconde compte, et des imprévus arrivent.",
+    start: lazyGame(() => import("./games/victime.js"), "startVictimeGame"), ok: () => true }
 };
 /* Jeux lourds : chargés seulement au lancement */
 function lazyGame(load, fn) {
@@ -84,7 +87,7 @@ const visibleFiches = (m) => (m.fiches || []).filter((f) => !f.hidden);
 
 /* ---- Cadre des pages ---- */
 function frame(crumb, color) {
-  return '<header class="bar"><a class="logo" href="#/">' + logoHTML() + "</a>" +
+  return '<header class="bar"><a class="logo" href="' + (formations().length ? "#/formation" : "#/") + '">' + logoHTML() + "</a>" +
     (crumb ? '<span class="crumb hide-m">' + crumb + "</span>" : "") + '<span class="spacer"></span>' +
     '<a class="iconbtn" href="#/progression" title="Ma progression">' + ic("chart") + "</a>" +
     '<a class="iconbtn" href="#/formateur" title="Mode formateur">' + ic("key") + "</a>" +
@@ -178,7 +181,7 @@ function modulePage(m, tab) {
       (x.list.length ? '<div class="fiches">' + x.list.map(item).join("") + "</div>" : '<div class="empty small">Fiche en préparation.</div>') + "</div>").join("");
     if (!comps.length && !fiches.length) body = '<div class="empty">Le contenu de ce module est en préparation.</div>';
   }
-  page.innerHTML =
+  page.innerHTML = '<a class="backlink" href="#/">' + ic("back") + "Tous les modules</a>" +
     '<div class="modhead"><span class="micon">' + ic(m.icon) + "</span><div><h1>" + esc(m.title) + "</h1><p>" +
       (s.total ? s.read + "/" + s.total + " " + luesWord(s.total) + (s.avg != null ? " · tests : " + s.avg + " % en moyenne" : "") : esc(m.short || "")) + "</p></div></div>" +
     '<nav class="tabs"><a class="tab' + (tab !== "jeux" ? " on" : "") + '" href="#/m/' + m.id + '">' + ic("book") + "Révisions</a>" +
