@@ -11,13 +11,13 @@ const DEMO = [
   { id: "demo-1", t: "Q", f: "", q: "Pendant le duel, qui annonce la réponse de l'équipe au formateur ?",
     a: ["Le capitaine de l'équipe", "Le premier qui crie", "Le formateur choisit seul", "L'équipe adverse"],
     e: "Chaque équipe désigne un capitaine : il annonce la réponse, le formateur clique dessus." },
-  { id: "demo-2", t: "V", f: "", q: "Si une équipe vole une question et se trompe, elle perd des points.", a: ["F"],
-    e: "Faux : voler ne coûte rien. Si l'équipe trouve, elle gagne des points ; sinon, rien ne change." }
+  { id: "demo-2", t: "V", f: "", q: "Si une équipe vole une question et se trompe, elle perd des points.", a: ["V"],
+    e: "Vrai : voler est un pari. Bonne réponse : l'équipe gagne des points. Mauvaise réponse ou temps écoulé : elle en perd davantage." }
 ];
 
 export function startDuelGame(ctx) {
   const { app, mod, platform } = ctx;
-  const D = Object.assign({ q1: 10, q2: 4, tQ: 45, tScen: 60, tSteal: 20, pts: 2, ptsSteal: 1, mult: 2 }, platform.duel || {});
+  const D = Object.assign({ q1: 10, q2: 4, tQ: 45, tScen: 60, tSteal: 15, pts: 2, ptsSteal: 1, ptsStealFail: 2, mult: 2 }, platform.duel || {});
   let duel = null, timerId = null, qctl = null;
   const stopTimer = () => { if (timerId) clearInterval(timerId); timerId = null; };
   const $ = (s) => app.querySelector(s);
@@ -32,7 +32,7 @@ export function startDuelGame(ctx) {
         "<li><span>Les équipes jouent <b>chacune à leur tour</b>. L'écran indique quelle équipe doit répondre.</span></li>" +
         "<li><span>L'équipe a <b>" + D.tQ + " secondes</b> pour se mettre d'accord. Le capitaine annonce la réponse et <b>le formateur clique dessus</b>.</span></li>" +
         '<li><span><span class="o">Bonne réponse :</span> ' + plural(D.pts, "point") + ".</span></li>" +
-        '<li><span><span class="x">Mauvaise réponse ou temps écoulé :</span> l\'autre équipe peut <b>voler la question</b>. Si elle trouve, elle gagne ' + plural(D.ptsSteal, "point") + ". Si elle se trompe, elle ne perd rien.</span></li>" +
+        '<li><span><span class="x">Mauvaise réponse ou temps écoulé :</span> l\'autre équipe peut <b>voler la question</b>. Si elle trouve, elle gagne ' + plural(D.ptsSteal, "point") + ". Si elle se trompe ou dépasse ses <b>" + D.tSteal + " secondes</b>, elle <b>perd " + plural(D.ptsStealFail, "point") + "</b>.</span></li>" +
         "<li><span>Chaque équipe a <b>2 jokers</b>, utilisables une seule fois : <b>50/50</b> (retire des mauvaises réponses) et <b>+20 s</b>.</span></li>" +
         "<li><span>Le duel se joue en <b>3 manches</b> : questions rapides, mises en situation à points doublés, puis une <b>finale</b> où chaque équipe mise des points.</span></li>" +
       "</ol>" +
@@ -66,11 +66,11 @@ export function startDuelGame(ctx) {
       "Question 2 : <b>" + esc(duel.teams[1].name) + "</b> se trompe exprès, pour découvrir le vol."] };
     if (phase === "m1") return { kicker: "Manche 1", title: "Questions rapides", btn: "C'est parti !", bullets: [
       plural(duel.sets.m1.length, "question") + ", chaque équipe à son tour.",
-      "Bonne réponse : <b>" + plural(D.pts, "point") + "</b>. Vol réussi : <b>" + plural(D.ptsSteal, "point") + "</b>.",
+      "Bonne réponse : <b>" + plural(D.pts, "point") + "</b>. Vol réussi : <b>+" + D.ptsSteal + "</b>, vol raté : <b>−" + D.ptsStealFail + "</b>.",
       D.tQ + " secondes par question. Les jokers sont disponibles."] };
     if (phase === "m2") return { kicker: "Manche 2", title: "Mises en situation", btn: "C'est parti !", bullets: [
       plural(duel.sets.m2.length, "situation") + " d'intervention, chaque équipe à son tour.",
-      "<b>Points doublés</b> : " + plural(D.pts * D.mult, "point") + ", vol réussi : " + plural(D.ptsSteal * D.mult, "point") + ".",
+      "<b>Points doublés</b> : " + plural(D.pts * D.mult, "point") + ", vol réussi : +" + D.ptsSteal * D.mult + ", vol raté : −" + D.ptsStealFail * D.mult + ".",
       D.tScen + " secondes pour réfléchir. Les jokers restants sont disponibles."] };
     return { kicker: "Manche 3", title: "La finale", btn: "Faire les mises", bullets: [
       "Chaque équipe <b>mise des points</b> avant de voir sa question : jusqu'à tout son score (2 points si elle n'en a pas).",
@@ -217,7 +217,7 @@ export function startDuelGame(ctx) {
     const team = duel.answering, demo = duel.phase === "demo", other = 1 - team;
     if (duel.phase === "final") {
       const bet = duel.bets[team];
-      duel.teams[team].score = Math.max(0, duel.teams[team].score + (ok ? bet : -bet));
+      duel.teams[team].score += ok ? bet : -bet;
       duel.resolved = true;
       ok ? SND.good() : SND.bad();
       qctl.reveal(info);
@@ -235,7 +235,7 @@ export function startDuelGame(ctx) {
       qctl.feedback(true, (duel.stealing ? "Vol réussi ! " : "Bonne réponse ! ") + "+" + plural(gain, "point") + " pour " + duel.teams[team].name + (demo ? " (démo : non comptés)" : ""));
       updateScoreboard();
       if (demo && duel.idx === 0) coach("Bravo ! En vraie partie, une bonne réponse rapporte <b>" + plural(D.pts, "point") + "</b>. Passons à la question 2 pour découvrir le vol.");
-      if (demo && duel.idx === 1) coach("Voilà le vol : l'équipe qui vole marque <b>" + plural(D.ptsSteal, "point") + "</b> si elle trouve, et ne perd rien si elle se trompe.");
+      if (demo && duel.idx === 1) coach("Voilà le vol : l'équipe qui vole marque <b>" + plural(D.ptsSteal, "point") + "</b> si elle trouve, mais en perd <b>" + D.ptsStealFail + "</b> si elle se trompe ou si le temps est écoulé.");
       nextBtn();
       return;
     }
@@ -245,9 +245,9 @@ export function startDuelGame(ctx) {
       const stealGain = D.ptsSteal * mult();
       $("#qnext").innerHTML = '<div class="stealbox"><b>' + (info.timeout ? "Temps écoulé !" : "Mauvaise réponse !") + "</b> " +
         '<span style="color:' + TEAM_COLORS[other] + '">' + esc(duel.teams[other].name) + "</span>, voulez-vous <b>voler la question</b> ? " +
-        plural(stealGain, "point") + " si vous trouvez, rien à perdre." +
+        "<b>+" + stealGain + "</b> si vous trouvez, <b>−" + D.ptsStealFail * mult() + "</b> si vous vous trompez ou si les " + D.tSteal + " secondes sont écoulées." +
         '<div class="row"><button class="btn big" style="background:' + TEAM_COLORS[other] + ';color:#fff" id="stealYes">Oui, on vole !</button><button class="btn big" id="stealNo">Non, on passe</button></div></div>';
-      if (demo) coach("C'est le <b>vol</b> : quand une équipe se trompe, l'autre peut tenter sa chance. Si elle trouve, elle marque " + plural(D.ptsSteal, "point") + " ; si elle se trompe, elle ne perd rien. Cliquez sur « Oui, on vole ! ».");
+      if (demo) coach("C'est le <b>vol</b> : quand une équipe se trompe, l'autre peut tenter sa chance. Si elle trouve, elle marque " + plural(D.ptsSteal, "point") + " ; si elle se trompe ou n'a pas répondu en " + D.tSteal + " secondes, elle en perd " + D.ptsStealFail + ". Cliquez sur « Oui, on vole ! ».");
       $("#stealYes").onclick = () => {
         SND.steal();
         Object.assign(duel, { stealing: true, answering: other });
@@ -271,10 +271,13 @@ export function startDuelGame(ctx) {
       updateScoreboard();
       return;
     }
+    // Vol raté (mauvaise réponse ou temps écoulé) : pénalité
+    const loss = D.ptsStealFail * mult();
+    if (!demo) duel.teams[team].score -= loss;
     duel.resolved = true;
     qctl.reveal(info);
-    qctl.feedback(false, (info.timeout ? "Temps écoulé ! " : "Raté ! ") + "Personne ne marque de point.");
-    if (demo) coach("Pas de chance, mais vous avez compris le principe : l'équipe qui vole ne perd rien en cas d'erreur.");
+    qctl.feedback(false, (info.timeout ? "Temps écoulé ! " : "Vol raté ! ") + "−" + plural(loss, "point") + " pour " + duel.teams[team].name + (demo ? " (démo : non comptés)" : ""));
+    if (demo) coach("Vol raté : en vraie partie, l'équipe aurait perdu <b>" + plural(loss, "point") + "</b>. Voler, c'est un pari !");
     updateScoreboard();
     nextBtn();
   }

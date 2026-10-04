@@ -93,7 +93,7 @@ function loginScreen(app) {
 /* ---- Tableau de bord ---- */
 function dashboard(app, api) {
   platDraft = clone(api.platform());
-  const P = platDraft, D = Object.assign({ q1: 10, q2: 4, tQ: 45, tScen: 60, tSteal: 20, pts: 2, ptsSteal: 1, mult: 2 }, P.duel || {});
+  const P = platDraft, D = Object.assign({ q1: 10, q2: 4, tQ: 45, tScen: 60, tSteal: 15, pts: 2, ptsSteal: 1, ptsStealFail: 2, mult: 2 }, P.duel || {});
   P.duel = D; P.quiz = Object.assign({ n: 20 }, P.quiz || {});
   const num = (obj, key, label) => '<label class="inl">' + label + ' <input type="number" min="0" data-o="' + obj + '" data-k="' + key + '" value="' + P[obj][key] + '"></label>';
   const page = shell(app, "",
@@ -109,7 +109,7 @@ function dashboard(app, api) {
     '<div class="frow"><div class="box"><h3>Quiz</h3>' + num("quiz", "n", "Questions par partie") + "</div>" +
     '<div class="box"><h3>Duel d\'équipes</h3>' + num("duel", "q1", "Questions de la manche 1") + num("duel", "q2", "Mises en situation (manche 2)") +
       num("duel", "tQ", "Secondes par question") + num("duel", "tScen", "Secondes par mise en situation") + num("duel", "tSteal", "Secondes pour un vol") +
-      num("duel", "pts", "Points bonne réponse") + num("duel", "ptsSteal", "Points vol réussi") + num("duel", "mult", "Multiplicateur manche 2") + "</div></div>" +
+      num("duel", "pts", "Points bonne réponse") + num("duel", "ptsSteal", "Points vol réussi") + num("duel", "ptsStealFail", "Points perdus si vol raté") + num("duel", "mult", "Multiplicateur manche 2") + "</div></div>" +
     '<div class="row end"><button class="btn red" id="savePlat">' + ic("save") + "Enregistrer la plateforme</button></div>" +
     '<div class="section-title">Codes d\'accès</div>' +
     '<div class="box"><p class="muted small" style="margin-top:0">Les codes ne sont jamais affichés : vous pouvez seulement les remplacer. Après un changement du code stagiaire, chaque stagiaire devra saisir le nouveau code.</p>' +
