@@ -13,6 +13,8 @@ const MODULE_TABS = [["infos", "Infos"], ["fiches", "Fiches"], ["questions", "Qu
 
 export function openFormateur(app, parts, api) {
   if (!store.formateurCode()) { loginScreen(app); return; }
+  // Formateur d'une formation : pas de modification du contenu (commun à tous), seulement ses codes
+  if (!store.isAdmin()) return trainerDashboard(app, api);
   if (parts[0] === "m" && api.moduleById(parts[1])) {
     const m = draftOf(api.moduleById(parts[1]));
     if (parts[2] === "f" && parts[3]) return ficheEditor(app, m, parts[3]);
@@ -84,10 +86,48 @@ function loginScreen(app) {
     const err = app.querySelector("#ferr");
     err.textContent = "Vérification…";
     try {
-      if (await store.formateurLogin(app.querySelector("#fcode").value)) location.reload();
-      else err.textContent = "Code formateur incorrect.";
+      const r = await store.formateurLogin(app.querySelector("#fcode").value);
+      if (r === "ok") location.reload();
+      else err.textContent = r === "other" ? "Ce code ne correspond pas à cette formation." : "Code formateur incorrect.";
     } catch (ex) { err.textContent = "Connexion impossible."; }
   };
+}
+
+/* ---- Codes d'accès : l'admin gère tous les codes, un formateur ceux de sa formation ---- */
+async function codesBox(box, api) {
+  const admin = store.isAdmin(), mine = store.formateurFormation();
+  const F = (api.platform().formations || []).filter((f) => admin || f.id === mine);
+  const rows = (admin ? [["admin", "*", "Administrateur", "voit et modifie tout, gère tous les codes"], ["stagiaire", "*", "Stagiaire, toutes formations", "choisit sa formation à l'accueil"]] : [])
+    .concat(...F.map((f) => [["stagiaire", f.id, "Stagiaire · " + f.title, "voit uniquement cette formation"], ["formateur", f.id, "Formateur · " + f.title, "gère les codes de cette formation, ne modifie pas le contenu"]]));
+  const intro = '<p class="muted small" style="margin-top:0">Les codes ne sont jamais affichés : vous pouvez seulement les créer ou les remplacer. Après un changement, les personnes concernées devront saisir le nouveau code.</p>';
+  box.innerHTML = '<div class="box">' + intro + '<p class="muted small">Chargement…</p></div>';
+  const list = await store.codesList();
+  const has = (r, f) => list && list.some((x) => x.role === r && x.formation === f);
+  box.innerHTML = '<div class="box">' + intro +
+    rows.map(([r, f, label, hint], i) => '<label class="field">' + esc(label) + ' <span class="muted small">(' + esc(hint) + " · " +
+      (list ? (has(r, f) ? "code en place" : "<b>pas encore créé</b>") : "état inconnu") + ')</span><input data-code="' + i + '" type="text" autocomplete="off" placeholder="Nouveau code"></label>').join("") +
+    '<div class="row end"><button class="btn dark" id="saveCodes">' + ic("key") + "Enregistrer les codes remplis</button></div></div>";
+  box.querySelector("#saveCodes").onclick = async () => {
+    const todo = [...box.querySelectorAll("[data-code]")].map((inp) => [rows[+inp.dataset.code], inp.value.trim()]).filter((x) => x[1]);
+    if (!todo.length) { toast("Remplissez au moins un nouveau code."); return; }
+    if (todo.some((x) => x[1].length < 4)) { toast("Un code doit faire au moins 4 caractères."); return; }
+    if (new Set(todo.map((x) => x[1])).size < todo.length) { toast("Chaque code doit être différent."); return; }
+    if (!confirm("Confirmer le changement de " + plural(todo.length, "code") + " ?")) return;
+    try {
+      for (const [row, code] of todo) await store.setCode(row[0], row[1], code);
+      toast("Code(s) enregistré(s). Notez-les bien !");
+      codesBox(box, api);
+    } catch (e) { toast("Échec : " + e.message); }
+  };
+}
+
+/* ---- Tableau de bord d'un formateur : une formation, contenu en lecture seule ---- */
+function trainerDashboard(app, api) {
+  const f = (api.platform().formations || [])[0];
+  const page = shell(app, "", '<h1 class="title">Mode formateur</h1>' +
+    '<p class="lead">' + (f ? "Formation <b>" + esc(f.title) + "</b>. " : "") + "Le contenu (fiches, questions, jeux) est commun à tous les formateurs : il est tenu à jour par les administrateurs. Vous pouvez le consulter sur le site et gérer ici les codes de votre formation.</p>" +
+    '<div class="section-title">Codes d\'accès</div><div id="codesBox"></div>');
+  codesBox(page.querySelector("#codesBox"), api);
 }
 
 /* ---- Tableau de bord ---- */
@@ -112,28 +152,13 @@ function dashboard(app, api) {
       num("duel", "pts", "Points bonne réponse") + num("duel", "ptsSteal", "Points vol réussi") + num("duel", "ptsStealFail", "Points perdus si vol raté") + num("duel", "mult", "Multiplicateur manche 2") + "</div></div>" +
     '<div class="row end"><button class="btn red" id="savePlat">' + ic("save") + "Enregistrer la plateforme</button></div>" +
     '<div class="section-title">Codes d\'accès</div>' +
-    '<div class="box"><p class="muted small" style="margin-top:0">Les codes ne sont jamais affichés : vous pouvez seulement les remplacer. Après un changement du code stagiaire, chaque stagiaire devra saisir le nouveau code.</p>' +
-      '<div class="frow"><label class="field">Nouveau code stagiaire<input id="newStag" type="text" autocomplete="off"></label>' +
-      '<label class="field">Nouveau code formateur<input id="newForm" type="text" autocomplete="off"></label></div>' +
-      '<div class="row end"><button class="btn dark" id="saveCodes">' + ic("key") + "Changer les codes remplis</button></div></div>");
+    '<div id="codesBox"></div>');
+  codesBox(page.querySelector("#codesBox"), api);
   page.querySelectorAll("[data-o]").forEach((inp) => { inp.oninput = () => { P[inp.dataset.o][inp.dataset.k] = Math.max(0, Math.floor(+inp.value || 0)); }; });
   page.querySelector("#pName").oninput = (e) => { P.name = e.target.value; };
   page.querySelector("#pTag").oninput = (e) => { P.tagline = e.target.value; };
   page.querySelector("#savePlat").onclick = async () => {
     try { await store.savePlatform(clone(P)); toast("Plateforme enregistrée."); } catch (e) { toast("Échec : " + e.message); }
-  };
-  page.querySelector("#saveCodes").onclick = async () => {
-    const s = page.querySelector("#newStag").value.trim(), f = page.querySelector("#newForm").value.trim();
-    if (!s && !f) { toast("Remplissez au moins un nouveau code."); return; }
-    if ((s && s.length < 4) || (f && f.length < 4)) { toast("Un code doit faire au moins 4 caractères."); return; }
-    if (s && f && s === f) { toast("Les deux codes doivent être différents."); return; }
-    if (!confirm("Confirmer le changement de code ?")) return;
-    try {
-      if (s) await store.setCode("stagiaire", s);
-      if (f) await store.setCode("formateur", f);
-      toast("Code(s) changé(s). Notez-les bien !");
-      page.querySelector("#newStag").value = page.querySelector("#newForm").value = "";
-    } catch (e) { toast("Échec : " + e.message); }
   };
   page.querySelector("#addMod").onclick = async () => {
     const title = prompt("Titre du nouveau module ?");

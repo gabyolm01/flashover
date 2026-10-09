@@ -73,6 +73,7 @@ export function formations() { return platform().formations || []; }
 export function currentFormation() {
   const F = formations();
   if (!F.length) return null;
+  if (F.length === 1) return F[0];               // code lié à une seule formation
   let id = null; try { id = localStorage.getItem(FKEY); } catch (e) {}
   return F.find((f) => f.id === id) || null;
 }
@@ -102,7 +103,7 @@ function gate(message) {
     '<form id="gateForm"><input class="codeinput" id="code" type="password" autocomplete="current-password" placeholder="Code d\'accès" aria-label="Code d\'accès" required>' +
     '<div class="err" id="err">' + (message || "") + "</div>" +
     '<button class="btn red big block" type="submit">' + ic("lock") + "Entrer</button></form>" +
-    '<p class="small">Le code vous est donné par votre formateur.' + (store.local ? "<br><b>Mode local</b> : codes « stagiaire » ou « formateur »." : "") + "</p></div></div>";
+    '<p class="small">Le code vous est donné par votre formateur.' + (store.local ? "<br><b>Mode local</b> : « stagiaire » (tout), « stagiaire-ce », « stagiaire-sst » ; formateurs : « formateur » (admin), « formateur-ce », « formateur-sst »." : "") + "</p></div></div>";
   const f = app.querySelector("#gateForm"), err = app.querySelector("#err");
   app.querySelector("#code").focus();
   f.onsubmit = async (e) => {
@@ -110,9 +111,9 @@ function gate(message) {
     const code = app.querySelector("#code").value.trim();
     err.textContent = "Vérification…";
     try {
-      const role = await store.login(code);
-      if (!role) { err.textContent = "Code incorrect."; return; }
-      store.remember(code, role);
+      const acc = await store.login(code);
+      if (!acc) { err.textContent = "Code incorrect."; return; }
+      store.remember(code, acc);
       await boot();
     } catch (ex) { err.textContent = "Connexion impossible. Vérifiez votre réseau."; }
   };
@@ -147,7 +148,7 @@ function home() {
         (s.total ? '<span class="proglabel">' + s.read + "/" + s.total + ' ' + luesWord(s.total) + '</span><span class="prog"><i style="width:' + s.pct + '%"></i></span>'
           : '<span class="proglabel">' + plural((m.competences || []).length, "compétence") + "</span>") + "</a>";
     }).join("") + "</div>" +
-    '<div class="links">' + (F ? '<a class="btn" href="#/formation">' + ic("back") + "Changer de formation</a>" : "") + '<a class="btn" href="#/progression">' + ic("chart") + 'Ma progression</a><button class="btn" id="logout">' + ic("logout") + "Changer de code</button></div>";
+    '<div class="links">' + (F && formations().length > 1 ? '<a class="btn" href="#/formation">' + ic("back") + "Changer de formation</a>" : "") + '<a class="btn" href="#/progression">' + ic("chart") + 'Ma progression</a><button class="btn" id="logout">' + ic("logout") + "Changer de code</button></div>";
   page.querySelector("#logout").onclick = () => { if (confirm("Se déconnecter ? Il faudra retaper le code d'accès.")) { store.logout(); gate(); } };
 }
 
@@ -236,7 +237,7 @@ async function route() {
   if (!store.content) return;
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   window.scrollTo(0, 0);
-  if (!parts.length) return formations().length ? chooser() : home();
+  if (!parts.length) return formations().length > 1 ? chooser() : home();
   if (parts[0] === "progression") return progressionPage();
   if (parts[0] === "formation") {
     if (parts[1] && formations().some((f) => f.id === parts[1])) { setFormation(parts[1]); return home(); }
